@@ -203,6 +203,40 @@
                     <div class="sub">USD</div>
                 </div>
             </div>
+
+            <div class="info-banner" style="background: linear-gradient(135deg, #E91E63 0%, #9C27B0 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                <h3 style="margin-bottom: 10px;">💎 市場インサイト</h3>
+                <p style="margin-bottom: 10px;"><strong>主要トレンド:</strong> ネックレスが908個（64.4%）で市場を牽引。CHANELとVivienne Westwoodが全体の約60%を占める。</p>
+                <p style="margin-bottom: 10px;"><strong>価格帯分析:</strong> 中央値$162、最頻価格帯$101-200（高回転ゾーン）</p>
+                <p><strong>推奨戦略:</strong> ①ネックレスは高回転カテゴリ - 在庫を厚めに ②CHANELは安定需要 - 仕入れルート確保 ③価格帯$150-200が主戦場</p>
+            </div>
+
+            <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 25px;">
+                <div class="chart-card" style="background: var(--bg-card); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">カテゴリ別販売数</h3>
+                    <div id="chart-category-sales"></div>
+                </div>
+                <div class="chart-card" style="background: var(--bg-card); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">カテゴリ別シェア</h3>
+                    <div id="chart-category-pie"></div>
+                </div>
+                <div class="chart-card" style="background: var(--bg-card); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">ブランド別販売数 TOP10</h3>
+                    <div id="chart-brand-sales"></div>
+                </div>
+                <div class="chart-card" style="background: var(--bg-card); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">価格帯分布</h3>
+                    <div id="chart-price-dist"></div>
+                </div>
+                <div class="chart-card" style="background: var(--bg-card); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">素材クラス分布</h3>
+                    <div id="chart-material"></div>
+                </div>
+                <div class="chart-card" style="background: var(--bg-card); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">人気モチーフ TOP10</h3>
+                    <div id="chart-motif"></div>
+                </div>
+            </div>
         </div>
 
         <div id="tab-ネックレス" class="tab-content">
@@ -2150,6 +2184,102 @@
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
         }
+
+        // グラフデータ
+        const overviewData = {
+            categorySales: {"ネックレス": 908, "イヤリング": 345, "ブローチ": 71, "ブレスレット": 41, "その他": 28, "リング": 10, "ペンダント": 6},
+            brandSales: {"CHANEL": 467, "Vivienne Westwood": 527, "DIOR": 46, "MIKIMOTO": 66, "不明": 157, "LOUIS VUITTON": 23, "GUCCI": 18, "TASAKI": 20, "TIFFANY & CO.": 14, "BVLGARI": 10},
+            priceRanges: {"$0-50": 142, "$51-100": 301, "$101-200": 523, "$201-500": 288, "$501-1000": 95, "$1000+": 60},
+            materialSales: {"模造真珠": 1065, "本真珠": 194, "不明": 150},
+            motifSales: {"オーブ": 436, "ココマーク": 185, "ヴァラ": 12, "カメリア": 24, "クロス": 8, "ハート": 15, "スター": 6}
+        };
+
+        // カテゴリ別販売数（横棒グラフ）
+        const categorySalesData = [{
+            type: 'bar',
+            x: Object.values(overviewData.categorySales),
+            y: Object.keys(overviewData.categorySales),
+            orientation: 'h',
+            marker: {color: '#E91E63'}
+        }];
+        Plotly.newPlot('chart-category-sales', categorySalesData, {
+            margin: {l: 100, r: 20, t: 20, b: 40},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')}
+        }, {responsive: true});
+
+        // カテゴリ別シェア（円グラフ）
+        const categoryPieData = [{
+            type: 'pie',
+            labels: Object.keys(overviewData.categorySales),
+            values: Object.values(overviewData.categorySales),
+            marker: {colors: ['#E91E63', '#9C27B0', '#FF9800', '#2196F3', '#757575', '#4CAF50', '#3F51B5']}
+        }];
+        Plotly.newPlot('chart-category-pie', categoryPieData, {
+            margin: {l: 20, r: 20, t: 20, b: 20},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')}
+        }, {responsive: true});
+
+        // ブランド別販売数（横棒グラフ）
+        const brandSalesData = [{
+            type: 'bar',
+            x: Object.values(overviewData.brandSales).slice(0, 10),
+            y: Object.keys(overviewData.brandSales).slice(0, 10),
+            orientation: 'h',
+            marker: {color: '#9C27B0'}
+        }];
+        Plotly.newPlot('chart-brand-sales', brandSalesData, {
+            margin: {l: 150, r: 20, t: 20, b: 40},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')}
+        }, {responsive: true});
+
+        // 価格帯分布（棒グラフ）
+        const priceDistData = [{
+            type: 'bar',
+            x: Object.keys(overviewData.priceRanges),
+            y: Object.values(overviewData.priceRanges),
+            marker: {color: '#2196F3'}
+        }];
+        Plotly.newPlot('chart-price-dist', priceDistData, {
+            margin: {l: 50, r: 20, t: 20, b: 60},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')}
+        }, {responsive: true});
+
+        // 素材クラス分布（円グラフ）
+        const materialData = [{
+            type: 'pie',
+            labels: Object.keys(overviewData.materialSales),
+            values: Object.values(overviewData.materialSales),
+            marker: {colors: ['#4CAF50', '#FF9800', '#757575']}
+        }];
+        Plotly.newPlot('chart-material', materialData, {
+            margin: {l: 20, r: 20, t: 20, b: 20},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')}
+        }, {responsive: true});
+
+        // モチーフ分布（横棒グラフ）
+        const motifData = [{
+            type: 'bar',
+            x: Object.values(overviewData.motifSales),
+            y: Object.keys(overviewData.motifSales),
+            orientation: 'h',
+            marker: {color: '#FF9800'}
+        }];
+        Plotly.newPlot('chart-motif', motifData, {
+            margin: {l: 100, r: 20, t: 20, b: 40},
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')}
+        }, {responsive: true});
     </script>
 </body>
 </html>
